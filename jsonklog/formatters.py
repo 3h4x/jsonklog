@@ -22,7 +22,7 @@ import traceback
 import itertools
 
 import anyjson as json
-
+import time
 
 class JSONFormatter(logging.Formatter):
 
@@ -39,8 +39,10 @@ class JSONFormatter(logging.Formatter):
         return lines
 
     def format(self, record):
+        timezone = time.strftime("%z")
+        es_tz_format = timezone[0:3]+":"+timezone[3:]
         msg = {'message': record.getMessage(),
-               'asctime': self.formatTime(record, self.datefmt),
+               'asctime': self.formatTime(record, self.datefmt).replace(',','.').replace(' ', 'T')+es_tz_format,
                'name': record.name,
                'msg': record.msg,
                'args': record.args,
